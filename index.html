@@ -226,22 +226,30 @@ body {
    CHAT BACKGROUND
 ================================= */
 
-.chat-area {
+.chat-stage {
     flex: 1;
-    overflow-y: auto;
-    padding: 20px 12px;
+    min-height: 0;
+    position: relative;
+    overflow: hidden;
 
     background-image:
-    linear-gradient(
-        rgba(0, 0, 0, 0.35),
-        rgba(0, 0, 0, 0.35)
-    ),
-    url("akaaa (2).jpeg");
+        linear-gradient(
+            rgba(0, 0, 0, 0.35),
+            rgba(0, 0, 0, 0.35)
+        ),
+        url("akaaa (2).jpeg");
 
-background-size: cover;
-background-position: center center;
-background-repeat: no-repeat;
-background-attachment: scroll;
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+
+.chat-area {
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    padding: 20px 12px;
+    background: transparent;
 }
 
 .date {
@@ -861,29 +869,91 @@ background-attachment: scroll;
 
 
 /* =================================
-   MOBILE
+   MOBILE ALBUM LAYOUT
 ================================= */
 
-@media (max-width: 360px) {
+@media (max-width: 600px) {
 
-    .album-left {
-        padding: 18px 9px;
+    /* Susunan galeri dan footer */
+    .album-main {
+        flex-direction: column;
     }
 
-    .album-title {
-        font-size: 21px;
+    /* GALERI FOTO */
+    .album-right {
+        order: 1;
+        width: 100%;
+        flex: 1;
+        min-height: 0;
     }
 
-    .album-note {
-        font-size: 10px;
+    .film-scroll {
+        width: 100%;
+        height: 100%;
+        padding: 40px 15px 25px;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        overflow-y: auto;
+    }
+
+    /* Satu foto dalam satu baris */
+    .film-item {
+        width: 100%;
+        max-width: 360px;
+        margin: 0 auto 15px;
+        flex-shrink: 0;
     }
 
     .film-item img {
-        height: 125px;
+        height: 190px;
     }
 
     .film-item video {
-        height: 145px;
+        height: 190px;
+    }
+
+    /* FOOTER MUSIK */
+    .album-left {
+        order: 2;
+
+        width: 100%;
+        height: auto;
+        flex-shrink: 0;
+
+        padding: 12px 18px;
+
+        border-right: none;
+        border-top: 1px solid #ffffff20;
+
+        justify-content: center;
+    }
+
+    /* Sembunyikan tulisan dekoratif di HP */
+    .album-text {
+        display: none;
+    }
+
+    .album-bottom {
+        width: 100%;
+    }
+
+    .song-label {
+        margin-bottom: 4px;
+    }
+
+    .song-name {
+        margin-bottom: 2px;
+    }
+
+    .song-artist {
+        margin-bottom: 8px;
+    }
+
+    .album-footer-text {
+        display: none;
     }
 
 }
@@ -1137,18 +1207,12 @@ background-attachment: scroll;
 
         </div>
 
+        <div class="chat-stage">
 
-        <div class="chat-area" id="chatArea">
+    <div class="chat-area" id="chatArea">
 
-            <div class="date">
-                <span>Hari ini</span>
-            </div>
-
-        </div>
-
-
-        <div class="chat-footer">
-            Turunin gengsi, just for you.
+        <div class="date">
+            <span>Hari ini</span>
         </div>
 
     </div>
