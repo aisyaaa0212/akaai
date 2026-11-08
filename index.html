@@ -678,28 +678,41 @@ body {
     width: 100%;
     height: 100%;
     overflow-y: auto;
-    padding: 42px 9px 35px;
-    scrollbar-width: none;
-}
+    overflow-x: hidden;
 
-.film-scroll::-webkit-scrollbar {
-    display: none;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+
+    padding: 35px 14px 125px;
+
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
 }
 
 .film-item {
+    display: block;
+    flex: 0 0 auto;
     width: 100%;
-    margin-bottom: 13px;
-    position: relative;
+    min-width: 0;
+    margin: 0;
     overflow: hidden;
-    border: 1px solid #ffffff25;
-    background: #1c304d;
-    animation: fadeFilm 1.2s ease both;
 }
 
-.film-item img,
-.film-item video {
-    width: 100%;
+.film-item img {
     display: block;
+    width: 100%;
+    height: 220px;
+    min-height: 220px;
+    object-fit: cover;
+    opacity: 1;
+}
+
+.film-item video {
+    display: block;
+    width: 100%;
+    height: 220px;
     object-fit: cover;
 }
 
@@ -1061,25 +1074,6 @@ body {
 
 }
 
-
-/* HP LAYAR KECIL */
-@media (max-width: 360px) {
-
-    .film-scroll {
-        gap: 8px;
-        padding-left: 8px;
-        padding-right: 8px;
-    }
-
-    .film-item img {
-        height: 130px;
-    }
-
-    .film-item video {
-        height: 135px;
-    }
-
-}
 
 </style>
 </head>
