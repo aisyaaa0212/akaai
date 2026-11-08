@@ -241,7 +241,7 @@ body {
 background-size: cover;
 background-position: center center;
 background-repeat: no-repeat;
-background-attachment: local;
+background-attachment: scroll;
 }
 
 .date {
@@ -884,6 +884,186 @@ background-attachment: local;
 
     .film-item video {
         height: 145px;
+    }
+
+}
+
+/* =================================
+   MOBILE ALBUM - FIXED HEADER & FOOTER
+================================= */
+
+@media (max-width: 600px) {
+
+    /* Album memenuhi layar HP */
+    #memoryAlbum {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        min-height: 0;
+    }
+
+    /* HEADER TETAP DI ATAS */
+    .album-header {
+        flex: 0 0 54px;
+        height: 54px;
+        padding: 0 15px;
+        z-index: 10;
+    }
+
+    .album-header h3 {
+        font-size: 13px;
+        letter-spacing: .5px;
+    }
+
+    /* AREA TENGAH */
+    .album-main {
+        flex: 1;
+        min-height: 0;
+        display: block;
+        overflow: hidden;
+    }
+
+    /* Sembunyikan panel tulisan samping di HP */
+    .album-left {
+        display: contents;
+    }
+
+    .album-text {
+        display: none;
+    }
+
+    /* GALERI FOTO DAN VIDEO */
+    .album-right {
+        width: 100%;
+        height: 100%;
+        min-height: 0;
+        display: block;
+        overflow: hidden;
+    }
+
+    .film-label {
+        top: 10px;
+        left: 12px;
+        font-size: 7px;
+    }
+
+    .film-scroll {
+        width: 100%;
+        height: 100%;
+        overflow-y: auto;
+        overflow-x: hidden;
+
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        align-content: start;
+        gap: 10px;
+
+        padding: 35px 11px 125px;
+
+        overscroll-behavior: contain;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .film-item {
+        min-width: 0;
+        margin: 0;
+    }
+
+    .film-item img {
+        width: 100%;
+        height: 155px;
+        object-fit: cover;
+    }
+
+    .film-item:nth-child(3n) img {
+        height: 180px;
+    }
+
+    .film-item:nth-child(4n) img {
+        height: 130px;
+    }
+
+    .film-item video {
+        width: 100%;
+        height: 155px;
+        object-fit: cover;
+    }
+
+    .film-caption {
+        font-size: 8px;
+        padding: 6px;
+    }
+
+    /* FOOTER MUSIK TETAP DI BAWAH */
+    .album-bottom {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+
+        z-index: 20;
+
+        padding: 12px 18px;
+        padding-bottom: calc(12px + env(safe-area-inset-bottom));
+
+        background: linear-gradient(
+            145deg,
+            #304b70,
+            #203858 65%,
+            #152943
+        );
+
+        border-top: 1px solid #ffffff25;
+    }
+
+    .song-label {
+        font-size: 7px;
+        margin-bottom: 5px;
+        letter-spacing: 1.5px;
+    }
+
+    .song-name {
+        font-size: 14px;
+        margin-bottom: 3px;
+    }
+
+    .song-artist {
+        font-size: 10px;
+        margin-bottom: 10px;
+    }
+
+    .progress-track {
+        width: 100%;
+    }
+
+    .song-time {
+        font-size: 9px;
+        margin-top: 5px;
+    }
+
+    /* Hilangkan tulisan tambahan di footer */
+    .album-footer-text {
+        display: none;
+    }
+
+}
+
+
+/* HP LAYAR KECIL */
+@media (max-width: 360px) {
+
+    .film-scroll {
+        gap: 8px;
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+    .film-item img {
+        height: 130px;
+    }
+
+    .film-item video {
+        height: 135px;
     }
 
 }
@@ -1989,16 +2169,13 @@ function goBack() {
 // CLOSE PREVIEW WITH ESC
 // =================================
 
-document.addEventListener("keydown", function(event) {
+document.addEventListener("DOMContentLoaded", () => {
+    const music = document.getElementById("backgroundMusic");
 
-    if (event.key === "Escape") {
-
-        closePreview();
-
+    if (music) {
+        music.load();
     }
-
 });
-
 </script>
 
 </body>
