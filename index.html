@@ -1649,22 +1649,38 @@ function createMemoryAlbum() {
     const videoItems = allMemories.filter(item => item.type === "video");
 
     const photoItems = allMemories.filter(item => item.type === "photo");
-
     const finalMemories = [];
 
-    photoItems.forEach((photo, index) => {
+photoItems.forEach((photo, index) => {
 
-        finalMemories.push(photo);
+    finalMemories.push(photo);
 
-        if (index === 4 && videoItems[0]) {
-            finalMemories.push(videoItems[0]);
-        }
+    // Video pertama setelah foto ke-5
+    if (index === 4 && videoItems[0]) {
+        finalMemories.push(videoItems[0]);
+    }
 
-        if (index === 12 && videoItems[1]) {
-            finalMemories.push(videoItems[1]);
-        }
+    // Video kedua setelah foto ke-13
+    if (index === 12 && videoItems[1]) {
+        finalMemories.push(videoItems[1]);
+    }
 
-    });
+    // Video ketiga setelah foto ke-20
+    if (index === 19 && videoItems[2]) {
+        finalMemories.push(videoItems[2]);
+    }
+
+    // Video keempat setelah foto ke-30
+    if (index === 29 && videoItems[3]) {
+        finalMemories.push(videoItems[3]);
+    }
+
+    // Video kelima setelah foto ke-40
+    if (index === 39 && videoItems[4]) {
+        finalMemories.push(videoItems[4]);
+    }
+
+});
 
 
     // Buat elemen album
