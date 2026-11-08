@@ -1899,7 +1899,7 @@ photoItems.forEach((photo, index) => {
 
 img.alt = "Memory " + item.number;
 
-img.loading = "lazy";
+img.loading = "eager";
 
 img.addEventListener("load", () => {
     img.classList.add("photo-loaded");
@@ -1963,6 +1963,13 @@ img.onclick = () => openPreview(img.src);
 
         filmScroll.appendChild(wrapper);
 
+
+        console.log(
+    "Jumlah kotak galeri:",
+    filmScroll.children.length,
+    "Ukuran galeri:",
+    filmScroll.getBoundingClientRect()
+);
     });
 
 
