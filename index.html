@@ -869,91 +869,29 @@ body {
 
 
 /* =================================
-   MOBILE ALBUM LAYOUT
+   MOBILE
 ================================= */
 
-@media (max-width: 600px) {
+@media (max-width: 360px) {
 
-    /* Susunan galeri dan footer */
-    .album-main {
-        flex-direction: column;
+    .album-left {
+        padding: 18px 9px;
     }
 
-    /* GALERI FOTO */
-    .album-right {
-        order: 1;
-        width: 100%;
-        flex: 1;
-        min-height: 0;
+    .album-title {
+        font-size: 21px;
     }
 
-    .film-scroll {
-        width: 100%;
-        height: 100%;
-        padding: 40px 15px 25px;
-
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-
-        overflow-y: auto;
-    }
-
-    /* Satu foto dalam satu baris */
-    .film-item {
-        width: 100%;
-        max-width: 360px;
-        margin: 0 auto 15px;
-        flex-shrink: 0;
+    .album-note {
+        font-size: 10px;
     }
 
     .film-item img {
-        height: 190px;
+        height: 125px;
     }
 
     .film-item video {
-        height: 190px;
-    }
-
-    /* FOOTER MUSIK */
-    .album-left {
-        order: 2;
-
-        width: 100%;
-        height: auto;
-        flex-shrink: 0;
-
-        padding: 12px 18px;
-
-        border-right: none;
-        border-top: 1px solid #ffffff20;
-
-        justify-content: center;
-    }
-
-    /* Sembunyikan tulisan dekoratif di HP */
-    .album-text {
-        display: none;
-    }
-
-    .album-bottom {
-        width: 100%;
-    }
-
-    .song-label {
-        margin-bottom: 4px;
-    }
-
-    .song-name {
-        margin-bottom: 2px;
-    }
-
-    .song-artist {
-        margin-bottom: 8px;
-    }
-
-    .album-footer-text {
-        display: none;
+        height: 145px;
     }
 
 }
@@ -1024,7 +962,7 @@ body {
         overflow-x: hidden;
 
         display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: minmax(0, 1fr);
         align-content: start;
         gap: 10px;
 
