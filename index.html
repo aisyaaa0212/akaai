@@ -1,0 +1,1975 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>akaai</title>
+
+<style>
+
+/* =================================
+   GENERAL
+================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #d9dbd5;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.phone {
+    width: 100%;
+    max-width: 430px;
+    height: 90vh;
+    max-height: 850px;
+    background: #efeae2;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 5px 30px #0002;
+    position: relative;
+}
+
+
+/* =================================
+   HEADER
+================================= */
+
+.topbar {
+    height: 60px;
+    background: #075e54;
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 0 18px;
+    flex-shrink: 0;
+}
+
+.topbar h3 {
+    font-size: 19px;
+    font-weight: 500;
+}
+
+
+/* =================================
+   HOME
+================================= */
+
+#home {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: white;
+}
+
+.search {
+    padding: 15px;
+    background: #f0f2f5;
+}
+
+.search input {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    outline: none;
+}
+
+.contact {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    cursor: pointer;
+    gap: 13px;
+    border-bottom: 1px solid #eee;
+}
+
+.contact:hover {
+    background: #f7f7f7;
+}
+
+.avatar {
+    width: 52px;
+    height: 52px;
+    background: #b9c9bc;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 22px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.avatar img,
+.chat-profile img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.contact-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.contact-info h4 {
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+.contact-info p {
+    color: #888;
+    font-size: 13px;
+}
+
+.unread {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+.badge {
+    background: #25d366;
+    color: white;
+    border-radius: 50%;
+    min-width: 23px;
+    height: 23px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 4px;
+}
+
+
+/* =================================
+   CHAT
+================================= */
+
+#chat {
+    display: none;
+    height: 100%;
+    flex-direction: column;
+}
+
+.chat-header {
+    height: 65px;
+    background: #075e54;
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 0 15px;
+    gap: 12px;
+    flex-shrink: 0;
+}
+
+.back {
+    cursor: pointer;
+    font-size: 27px;
+    border: none;
+    color: white;
+    background: transparent;
+}
+
+.chat-profile {
+    width: 40px;
+    height: 40px;
+    background: #b9c9bc;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.chat-name h4 {
+    font-size: 16px;
+}
+
+.chat-name p {
+    font-size: 11px;
+    opacity: .8;
+}
+
+
+/* =================================
+   CHAT BACKGROUND
+================================= */
+
+.chat-area {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 12px;
+
+    background-image:
+        linear-gradient(
+            rgba(0, 0, 0, 0.35),
+            rgba(0, 0, 0, 0.35)
+        ),
+        url("akaaa (2).jpeg");
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: local;
+}
+
+.date {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.date span {
+    background: white;
+    padding: 7px 12px;
+    border-radius: 7px;
+    font-size: 11px;
+    color: #666;
+}
+
+
+/* =================================
+   MESSAGE
+================================= */
+
+.message {
+    max-width: 85%;
+    width: fit-content;
+    padding: 9px 11px 6px;
+    border-radius: 9px;
+    margin-bottom: 12px;
+    font-size: 14px;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+}
+
+.message.sent {
+    background: #d9fdd3;
+    margin-left: auto;
+    border-top-right-radius: 0;
+
+    opacity: 0;
+    transform: translateY(15px) scale(.94);
+    filter: blur(2px);
+
+    animation: smoothPop .65s cubic-bezier(.16,1,.3,1) forwards;
+}
+
+
+/* =================================
+   TIMESTAMP
+================================= */
+
+.time {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 3px;
+    font-size: 10px;
+    color: #888;
+    margin-top: 4px;
+}
+
+.checks {
+    color: #53bdeb;
+    font-size: 12px;
+    letter-spacing: -2px;
+    font-weight: bold;
+    margin-right: 2px;
+}
+
+
+/* =================================
+   PDF MESSAGE
+================================= */
+
+.pdf-message {
+    width: 85%;
+    max-width: 310px;
+}
+
+.pdf-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #c5eabd;
+    padding: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    border: none;
+    width: 100%;
+    text-align: left;
+    transition: .2s;
+}
+
+.pdf-card:hover {
+    background: #b6dfaa;
+}
+
+.pdf-icon {
+    width: 43px;
+    height: 48px;
+    background: #e8f5e9;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 22px;
+    flex-shrink: 0;
+}
+
+.pdf-info {
+    min-width: 0;
+}
+
+.pdf-info h4 {
+    font-size: 13px;
+    color: #303030;
+    margin-bottom: 5px;
+}
+
+.pdf-info p {
+    font-size: 11px;
+    color: #777;
+}
+
+
+/* =================================
+   MEMORY BUTTON
+================================= */
+
+.memory-button {
+    display: block;
+    margin: 18px auto;
+    padding: 13px 22px;
+    border: none;
+    border-radius: 30px;
+    background: #075e54;
+    color: white;
+    font-size: 13px;
+    letter-spacing: .5px;
+    cursor: pointer;
+    animation: smoothPop .8s ease forwards;
+    box-shadow: 0 4px 15px #0002;
+}
+
+.memory-button:hover {
+    background: #064b43;
+    transform: scale(1.03);
+}
+
+
+/* =================================
+   PDF VIEWER
+================================= */
+
+.pdf-modal {
+    display: none;
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,.85);
+    z-index: 999;
+    flex-direction: column;
+}
+
+.pdf-modal.active {
+    display: flex;
+}
+
+.pdf-modal-header {
+    height: 60px;
+    background: #075e54;
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 0 18px;
+    gap: 15px;
+    flex-shrink: 0;
+}
+
+.pdf-modal-header button {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 25px;
+    cursor: pointer;
+}
+
+.pdf-modal-header h3 {
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.pdf-viewer {
+    flex: 1;
+    width: 100%;
+    border: none;
+    background: #fff;
+}
+
+
+/* =================================
+   MEMORY ALBUM — BLUE THEME
+================================= */
+
+#memoryAlbum {
+    display: flex;
+    position: absolute;
+    inset: 0;
+    z-index: 1000;
+    background: #0b1220;
+    color: #edf4ff;
+    flex-direction: column;
+    overflow: hidden;
+
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: scale(0.985);
+
+    transition:
+        opacity .5s ease,
+        transform .5s cubic-bezier(.16, 1, .3, 1),
+        visibility .5s;
+}
+
+#memoryAlbum.active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: scale(1);
+}
+
+
+/* Album header */
+
+.album-header {
+    height: 58px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 17px;
+    border-bottom: 1px solid #ffffff18;
+    background: #101b30;
+}
+
+.album-header h3 {
+    font-family: Georgia, serif;
+    font-size: 15px;
+    font-weight: normal;
+    letter-spacing: 1px;
+    color: #e4edfa;
+}
+
+.album-close {
+    background: transparent;
+    border: none;
+    color: #dce8f5;
+    font-size: 25px;
+    cursor: pointer;
+}
+
+
+/* Album main layout */
+
+.album-main {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    overflow: hidden;
+}
+
+
+/* LEFT SIDE */
+
+.album-left {
+    width: 40%;
+    flex-shrink: 0;
+    padding: 23px 13px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: linear-gradient(
+        160deg,
+        #304b70,
+        #203858 55%,
+        #152943
+    );
+    border-right: 1px solid #ffffff15;
+    position: relative;
+    overflow: hidden;
+}
+
+.album-left::after {
+    content: "";
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    background: #8eb9e8;
+    filter: blur(100px);
+    opacity: .18;
+    bottom: 10%;
+    left: -50px;
+    pointer-events: none;
+}
+
+.album-text {
+    position: relative;
+    z-index: 1;
+}
+
+.album-small {
+    color: #b8d2f2;
+    font-size: 8px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 17px;
+}
+
+.album-title {
+    font-family: Georgia, serif;
+    font-size: clamp(21px, 6vw, 30px);
+    font-weight: normal;
+    line-height: 1.2;
+    margin-bottom: 12px;
+    color: #f1f6ff;
+}
+
+.album-subtitle {
+    color: #d0def0;
+    font-family: Georgia, serif;
+    font-size: 11px;
+    font-style: italic;
+    line-height: 1.6;
+}
+
+.album-divider {
+    width: 30px;
+    height: 1px;
+    background: #a9c4e8;
+    margin: 22px 0;
+}
+
+.album-note {
+    color: #d5e2f2;
+    font-family: Georgia, serif;
+    font-size: 11px;
+    line-height: 1.9;
+    font-style: italic;
+}
+
+.album-bottom {
+    position: relative;
+    z-index: 1;
+}
+
+.song-label {
+    color: #b8d2f2;
+    font-size: 8px;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+}
+
+.song-name {
+    font-family: Georgia, serif;
+    font-size: 14px;
+    margin-bottom: 5px;
+    color: #f1f6ff;
+}
+
+.song-artist {
+    font-size: 9px;
+    color: #b0c2d9;
+    margin-bottom: 15px;
+}
+
+.progress-track {
+    width: 100%;
+    height: 2px;
+    background: #ffffff30;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 7px;
+}
+
+.progress-fill {
+    height: 100%;
+    width: 0%;
+    background: #b5d4f7;
+}
+
+.song-time {
+    display: flex;
+    justify-content: space-between;
+    color: #b0c2d9;
+    font-size: 8px;
+}
+
+.album-footer-text {
+    margin-top: 22px;
+    font-family: Georgia, serif;
+    color: #b0c2d9;
+    font-size: 9px;
+    letter-spacing: 1px;
+}
+
+
+/* RIGHT SIDE */
+
+.album-right {
+    flex: 1;
+    min-width: 0;
+    position: relative;
+    overflow: hidden;
+    background: #101a2b;
+}
+
+.film-label {
+    position: absolute;
+    z-index: 5;
+    top: 12px;
+    left: 10px;
+    font-size: 8px;
+    letter-spacing: 2px;
+    color: #c8d9ee;
+    pointer-events: none;
+}
+
+.film-scroll {
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    padding: 42px 9px 35px;
+    scrollbar-width: none;
+}
+
+.film-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+.film-item {
+    width: 100%;
+    margin-bottom: 13px;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid #ffffff25;
+    background: #1c304d;
+    animation: fadeFilm 1.2s ease both;
+}
+
+.film-item img,
+.film-item video {
+    width: 100%;
+    display: block;
+    object-fit: cover;
+}
+
+.film-item img {
+    height: 145px;
+}
+
+.film-item:nth-child(3n) img {
+    height: 190px;
+}
+
+.film-item:nth-child(4n) img {
+    height: 120px;
+}
+
+.film-item video {
+    height: 175px;
+    background: #000;
+}
+
+.film-caption {
+    padding: 7px 8px;
+    color: #f3f1ef;
+    font-family: Georgia, serif;
+    font-size: 9px;
+    font-style: italic;
+    letter-spacing: .5px;
+    background: #5e7997;
+}
+
+.film-number {
+    position: absolute;
+    top: 7px;
+    left: 7px;
+    padding: 4px 6px;
+    background: #0009;
+    color: white;
+    font-size: 8px;
+    letter-spacing: 1px;
+}
+
+.film-item img {
+    cursor: pointer;
+    opacity: 0;
+    transition:
+        opacity .7s ease,
+        transform .6s ease;
+}
+
+.film-item img.photo-loaded {
+    opacity: 1;
+}
+
+.film-item img:hover {
+    transform: scale(1.04);
+}
+
+.film-item img:hover {
+    transform: scale(1.04);
+}
+
+
+/* Album bottom hint */
+
+.film-hint {
+    text-align: center;
+    color: #8c7a6c;
+    font-family: Georgia, serif;
+    font-size: 10px;
+    font-style: italic;
+    padding: 10px 0 20px;
+}
+
+
+/* =================================
+   IMAGE PREVIEW
+================================= */
+
+.image-preview {
+    display: none;
+    position: absolute;
+    inset: 0;
+    z-index: 1100;
+    background: #000e;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.image-preview.active {
+    display: flex;
+}
+
+.image-preview img {
+    max-width: 100%;
+    max-height: 85%;
+    object-fit: contain;
+}
+
+.preview-close {
+    position: absolute;
+    top: 15px;
+    right: 18px;
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 30px;
+    cursor: pointer;
+}
+
+
+/* =================================
+   MESSAGE ANIMATION
+================================= */
+
+@keyframes smoothPop {
+
+    0% {
+        opacity: 0;
+        transform: translateY(15px) scale(.94);
+        filter: blur(2px);
+    }
+
+    65% {
+        opacity: 1;
+        transform: translateY(-2px) scale(1.01);
+        filter: blur(0);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0);
+    }
+
+}
+
+@keyframes fadeFilm {
+
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+}
+
+
+/* =================================
+   FOOTER
+================================= */
+
+.chat-footer {
+    height: 55px;
+    background: #f0f2f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #888;
+    font-size: 12px;
+    flex-shrink: 0;
+}
+
+
+/* =================================
+   MOBILE
+================================= */
+
+@media (max-width: 360px) {
+
+    .album-left {
+        padding: 18px 9px;
+    }
+
+    .album-title {
+        font-size: 21px;
+    }
+
+    .album-note {
+        font-size: 10px;
+    }
+
+    .film-item img {
+        height: 125px;
+    }
+
+    .film-item video {
+        height: 145px;
+    }
+
+}
+
+</style>
+</head>
+
+
+<body>
+
+<div class="phone">
+
+
+    <!-- =================================
+         HOME
+    ================================== -->
+
+    <div id="home">
+
+        <div class="topbar">
+            <h3>WhatsApp</h3>
+        </div>
+
+        <div class="search">
+            <input
+                type="text"
+                placeholder="Cari atau mulai chat baru">
+        </div>
+
+        <div class="contact" onclick="openChat()">
+
+            <div class="avatar">
+                <img src="akaaa.jpeg" alt="Aka">
+            </div>
+
+            <div class="contact-info">
+                <h4>Aka</h4>
+
+                <p id="preview">
+                    Hai, ada sesuatu yang ingin kusampaikan...
+                </p>
+            </div>
+
+            <div class="unread" id="unread">
+                <div class="badge" id="badge">7</div>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================
+         CHAT ROOM
+    ================================== -->
+
+    <div id="chat">
+
+        <div class="chat-header">
+
+            <button class="back" onclick="goBack()">‹</button>
+
+            <div class="chat-profile">
+                <img src="akaaa.jpeg" alt="Aka">
+            </div>
+
+            <div class="chat-name">
+                <h4>Aka</h4>
+                <p>online</p>
+            </div>
+
+        </div>
+
+
+        <div class="chat-area" id="chatArea">
+
+            <div class="date">
+                <span>Hari ini</span>
+            </div>
+
+        </div>
+
+
+        <div class="chat-footer">
+            Turunin gengsi, just for you.
+        </div>
+
+    </div>
+
+
+    <!-- =================================
+         PDF VIEWER
+    ================================== -->
+
+    <div class="pdf-modal" id="pdfModal">
+
+        <div class="pdf-modal-header">
+
+            <button onclick="closePdf()">‹</button>
+
+            <h3 id="pdfTitle">ilysm aka.pdf</h3>
+
+        </div>
+
+        <iframe
+            id="pdfFrame"
+            class="pdf-viewer"
+            src=""
+            title="PDF Document">
+        </iframe>
+
+    </div>
+
+
+    <!-- =================================
+         MEMORY ALBUM
+    ================================== -->
+
+    <div id="memoryAlbum">
+
+        <div class="album-header">
+
+            <h3>Aka, Bolehkah Aii Merindu?</h3>
+
+            <button
+                class="album-close"
+                onclick="closeAlbum()">
+                ×
+            </button>
+
+        </div>
+
+
+        <div class="album-main">
+
+
+            <!-- LEFT PANEL -->
+
+            <div class="album-left">
+
+                <div class="album-text">
+
+                    <p class="album-small">
+                        A little archive
+                    </p>
+
+                    <h1 class="album-title">
+                        I love you<br>
+                        so much<br>
+                        Aka
+                    </h1>
+
+                    <p class="album-subtitle">
+                        two people who are trying to be the best
+                    </p>
+
+                    <div class="album-divider"></div>
+
+                    <p class="album-note">
+                        Waktu mungkin berlalu,<br>
+                        tapi kamu selalu menetap<br>
+                        dimana pun aku berada.
+                    </p>
+
+                </div>
+
+
+                <div class="album-bottom">
+
+                    <p class="song-label">
+                        NOW PLAYING
+                    </p>
+
+                    <p class="song-name">
+                        About You
+                    </p>
+
+                    <p class="song-artist">
+                        The 1975
+                    </p>
+
+                    <div class="progress-track">
+
+                        <div
+                            class="progress-fill"
+                            id="progressFill">
+                        </div>
+
+                    </div>
+
+                    <div class="song-time">
+
+                        <span id="currentTime">0:00</span>
+
+                        <span id="duration">0:00</span>
+
+                    </div>
+
+                    <p class="album-footer-text">
+                        disini aku mengenangmu.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- RIGHT PANEL -->
+
+            <div class="album-right">
+
+                <div class="film-label">
+                    MEMORY ARCHIVE
+                </div>
+
+                <div
+                    class="film-scroll"
+                    id="filmScroll">
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================
+         IMAGE PREVIEW
+    ================================== -->
+
+    <div
+        class="image-preview"
+        id="imagePreview">
+
+        <button
+            class="preview-close"
+            onclick="closePreview()">
+            ×
+        </button>
+
+        <img
+            id="previewImage"
+            src=""
+            alt="Memory">
+
+    </div>
+
+
+    <!-- =================================
+         AUDIO
+    ================================== -->
+
+    <audio
+        id="backgroundMusic"
+        src="what if i call.mp3"
+        preload="auto"
+        loop>
+    </audio>
+
+    <audio
+        id="albumMusic"
+        src="About you.mp3"
+        preload="auto">
+    </audio>
+
+
+</div>
+
+
+<script>
+
+
+// =================================
+// EDIT PESAN DI SINI
+// =================================
+
+const messages = [
+
+    {
+        text: "Hai, Aka."
+    },
+
+    {
+        text: "Sorry for bothering you."
+    },
+
+    {
+        text: "Ada sesuatu yang ingin gw sampaikan."
+    },
+
+    {
+        text: "Sebelumnya, terima kasih ya udah pernah hadir di bagian hidup gw."
+    },
+
+    {
+        text: "Banyak hal yang mungkin gak pernah sempat gw ungkapin secara langsung."
+    },
+
+    {
+        text: "Take your time reading this, okay?"
+    },
+
+    {
+        type: "pdf",
+        file: "ilysm aka.pdf",
+        name: "ilysm aka.pdf",
+        size: "PDF Document",
+        caption: "There's something I've been wanting to tell you."
+    },
+
+    {
+        text: "Makasih ya, Aka."
+    },
+
+    {
+        text: "Atas semuanya yang pernah lo lakuin ke gw."
+    },
+
+    {
+        text: "Gw sayang lo, Sweetie."
+    }
+
+];
+
+
+// =================================
+// MEMORY FILES
+// =================================
+
+// FOTO
+// Pastikan nama dan ekstensi file sesuai.
+
+const memoryPhotos = [
+
+    "foto1.jpg",
+    "foto2.png",
+    "foto3.jpg",
+    "foto4.jpg",
+    "foto5.jpg",
+    "foto6.jpg",
+    "foto7.jpg",
+    "foto8.jpg",
+    "foto9.png",
+    "foto10.png",
+    "foto11.png",
+    "foto12.png",
+    "foto13.jpeg",
+    "foto14.jpg",
+    "foto15.jpeg",
+    "foto16.jpeg",
+    "foto17.jpeg",
+    "foto18.png",
+    "foto19.png",
+    "foto20.png",
+    "foto21.jpeg",
+    "foto22.png",
+    "foto23.jpeg",
+"foto24.jpeg",
+"foto25.jpeg",
+"foto26.jpeg",
+"foto27.jpeg",
+"foto28.jpeg",
+"foto29.jpeg",
+"foto30.jpeg",
+"foto31.jpeg",
+"foto32.png",
+"foto33.png",
+"foto34.jpg",
+"foto35.jpg",
+"foto36.jpg",
+"foto37.png",
+"foto38.png",
+"foto39.png",
+"foto40.png",
+"foto41.jpg",
+"foto42.jpg",
+"foto43.png",
+"foto44.png",
+"foto45.png",
+"foto46.jpeg",
+"foto47.png",
+"foto48.png",
+"foto49.jpeg",
+"foto50.jpeg",
+"foto51.jpeg",
+"foto52.jpeg",
+"foto53.png",
+"foto54.jpeg",
+"foto55.jpeg"
+
+];
+
+
+// VIDEO
+// Tambahkan atau kurangi sesuai jumlah video kamu.
+
+const memoryVideos = [
+
+    "video1.mp4",
+    "video2.mp4",
+    "video3.mp4",
+    "video4.mp4",
+    "video5.mp4"
+];
+
+
+// =================================
+// SETTINGS
+// =================================
+
+const MESSAGE_DELAY = 2000;
+
+let typing = false;
+let index = 0;
+let audioContext;
+
+
+// =================================
+// CURRENT TIME
+// =================================
+
+function getCurrentTime() {
+
+    const now = new Date();
+
+    return now.toLocaleTimeString("id-ID", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false
+    });
+
+}
+
+
+// =================================
+// SOUND EFFECT
+// =================================
+
+function playSound() {
+
+    try {
+
+        if (!audioContext) {
+
+            audioContext = new (
+                window.AudioContext ||
+                window.webkitAudioContext
+            )();
+
+        }
+
+        if (audioContext.state === "suspended") {
+            audioContext.resume();
+        }
+
+        const oscillator = audioContext.createOscillator();
+
+        const gain = audioContext.createGain();
+
+        oscillator.connect(gain);
+        gain.connect(audioContext.destination);
+
+        oscillator.type = "sine";
+
+        oscillator.frequency.setValueAtTime(
+            880,
+            audioContext.currentTime
+        );
+
+        oscillator.frequency.exponentialRampToValueAtTime(
+            1320,
+            audioContext.currentTime + 0.12
+        );
+
+        gain.gain.setValueAtTime(
+            0.0001,
+            audioContext.currentTime
+        );
+
+        gain.gain.exponentialRampToValueAtTime(
+            0.12,
+            audioContext.currentTime + 0.02
+        );
+
+        gain.gain.exponentialRampToValueAtTime(
+            0.0001,
+            audioContext.currentTime + 0.3
+        );
+
+        oscillator.start();
+
+        oscillator.stop(
+            audioContext.currentTime + 0.3
+        );
+
+    } catch (error) {
+
+        console.log("Sound tidak tersedia");
+
+    }
+
+}
+
+
+// =================================
+// OPEN CHAT
+// =================================
+
+function openChat() {
+
+    document.getElementById("home").style.display = "none";
+
+    document.getElementById("chat").style.display = "flex";
+
+    document.getElementById("unread").style.display = "none";
+
+    const chatArea = document.getElementById("chatArea");
+
+    chatArea.innerHTML = `
+        <div class="date">
+            <span>Hari ini</span>
+        </div>
+    `;
+
+    index = 0;
+    typing = true;
+
+    const music = document.getElementById("backgroundMusic");
+
+    music.volume = 0.35;
+
+    music.play().catch(error => {
+        console.log("Musik tidak bisa diputar:", error);
+    });
+
+    showMessage();
+
+}
+
+
+// =================================
+// SHOW MESSAGE
+// =================================
+
+function showMessage() {
+
+    if (!typing || index >= messages.length) {
+        return;
+    }
+
+    const chatArea = document.getElementById("chatArea");
+
+    const msg = messages[index];
+
+    const bubble = document.createElement("div");
+
+    bubble.className = "message sent";
+
+
+    // PDF MESSAGE
+
+    if (msg.type === "pdf") {
+
+        bubble.classList.add("pdf-message");
+
+        const caption = document.createElement("div");
+
+        caption.textContent = msg.caption;
+
+        caption.style.marginBottom = "10px";
+
+        bubble.appendChild(caption);
+
+
+        const card = document.createElement("button");
+
+        card.className = "pdf-card";
+
+        card.innerHTML = `
+            <div class="pdf-icon">📄</div>
+
+            <div class="pdf-info">
+                <h4>${msg.name}</h4>
+                <p>${msg.size}</p>
+            </div>
+        `;
+
+        card.onclick = () => openPdf(msg.file, msg.name);
+
+        bubble.appendChild(card);
+
+    }
+
+
+    // NORMAL MESSAGE
+
+    else {
+
+        bubble.appendChild(
+            document.createTextNode(msg.text)
+        );
+
+    }
+
+
+    // TIMESTAMP
+
+    const time = document.createElement("span");
+
+    time.className = "time";
+
+    time.innerHTML = `
+        ${getCurrentTime()}
+        <span class="checks">✓✓</span>
+    `;
+
+    bubble.appendChild(time);
+
+
+    // ADD MESSAGE
+
+    chatArea.appendChild(bubble);
+
+
+    // AUTO SCROLL
+
+    chatArea.scrollTo({
+        top: chatArea.scrollHeight,
+        behavior: "smooth"
+    });
+
+
+    playSound();
+
+    index++;
+
+
+    // STOP AFTER PDF
+
+    if (msg.type === "pdf") {
+        return;
+    }
+
+
+    // NEXT MESSAGE
+
+    if (index < messages.length) {
+
+        setTimeout(showMessage, MESSAGE_DELAY);
+
+    }
+
+    else {
+
+        setTimeout(showMemoryButton, 1500);
+
+    }
+
+}
+
+
+// =================================
+// MEMORY BUTTON
+// =================================
+
+function showMemoryButton() {
+
+    const chatArea = document.getElementById("chatArea");
+
+    const button = document.createElement("button");
+
+    button.className = "memory-button";
+
+    button.textContent = "Play Our Memories";
+
+    button.onclick = openAlbum;
+
+    chatArea.appendChild(button);
+
+    chatArea.scrollTo({
+        top: chatArea.scrollHeight,
+        behavior: "smooth"
+    });
+
+}
+
+
+// =================================
+// OPEN PDF
+// =================================
+
+function openPdf(file, name) {
+
+    const modal = document.getElementById("pdfModal");
+
+    const frame = document.getElementById("pdfFrame");
+
+    document.getElementById("pdfTitle").textContent = name;
+
+    frame.src = file;
+
+    modal.classList.add("active");
+
+}
+
+
+// =================================
+// CLOSE PDF
+// =================================
+
+function closePdf() {
+
+    const modal = document.getElementById("pdfModal");
+
+    const frame = document.getElementById("pdfFrame");
+
+    modal.classList.remove("active");
+
+    frame.src = "";
+
+    setTimeout(() => {
+
+        showMessage();
+
+    }, 1200);
+
+}
+
+
+// =================================
+// CREATE MEMORY ALBUM
+// =================================
+
+function createMemoryAlbum() {
+
+    const filmScroll = document.getElementById("filmScroll");
+
+    filmScroll.innerHTML = "";
+
+    let allMemories = [];
+
+
+    // Gabungkan foto dan video
+
+    memoryPhotos.forEach((photo, index) => {
+
+        allMemories.push({
+
+            type: "photo",
+            file: photo,
+            number: index + 1
+
+        });
+
+    });
+
+
+    memoryVideos.forEach((video, index) => {
+
+        allMemories.push({
+
+            type: "video",
+            file: video,
+            number: index + 1
+
+        });
+
+    });
+
+
+    // Sisipkan video di beberapa bagian album.
+    // Video pertama setelah foto ke-5.
+    // Video kedua setelah foto ke-13.
+
+    const videoItems = allMemories.filter(item => item.type === "video");
+
+    const photoItems = allMemories.filter(item => item.type === "photo");
+
+    const finalMemories = [];
+
+    photoItems.forEach((photo, index) => {
+
+        finalMemories.push(photo);
+
+        if (index === 4 && videoItems[0]) {
+            finalMemories.push(videoItems[0]);
+        }
+
+        if (index === 12 && videoItems[1]) {
+            finalMemories.push(videoItems[1]);
+        }
+
+    });
+
+
+    // Buat elemen album
+
+    finalMemories.forEach((item, index) => {
+
+        const wrapper = document.createElement("div");
+
+        wrapper.className = "film-item";
+
+
+        if (item.type === "photo") {
+
+            const img = document.createElement("img");
+
+img.alt = "Memory " + item.number;
+
+img.loading = "lazy";
+
+img.addEventListener("load", () => {
+    img.classList.add("photo-loaded");
+}, { once: true });
+
+img.addEventListener("error", () => {
+    console.log("Foto gagal dimuat:", item.file);
+}, { once: true });
+
+img.src = "memories/" + item.file;
+
+img.onclick = () => openPreview(img.src);
+
+            wrapper.appendChild(img);
+
+            const number = document.createElement("span");
+
+            number.className = "film-number";
+
+            number.textContent = String(item.number).padStart(2, "0");
+
+            wrapper.appendChild(number);
+
+            const caption = document.createElement("div");
+
+            caption.className = "film-caption";
+
+            caption.textContent = "a little piece of memory.";
+
+            wrapper.appendChild(caption);
+
+        }
+
+
+        else if (item.type === "video") {
+
+            const video = document.createElement("video");
+
+            video.src = "memories/" + item.file;
+
+            video.controls = true;
+
+            video.playsInline = true;
+
+            video.preload = "metadata";
+
+            video.muted = true;
+
+            wrapper.appendChild(video);
+
+            const caption = document.createElement("div");
+
+            caption.className = "film-caption";
+
+            caption.textContent = "a moment that moves.";
+
+            wrapper.appendChild(caption);
+
+        }
+
+
+        filmScroll.appendChild(wrapper);
+
+    });
+
+
+    const hint = document.createElement("div");
+
+    hint.className = "film-hint";
+
+    hint.textContent = "♡♡♡♡♡.";
+
+    filmScroll.appendChild(hint);
+
+}
+
+
+// =================================
+// OPEN ALBUM
+// =================================
+
+function openAlbum() {
+
+    const album = document.getElementById("memoryAlbum");
+
+    const chatMusic = document.getElementById("backgroundMusic");
+
+    const albumMusic = document.getElementById("albumMusic");
+
+
+    // Hentikan musik chat
+
+    chatMusic.pause();
+
+
+    // Siapkan album
+
+    createMemoryAlbum();
+
+    album.classList.add("active");
+
+
+    // Reset posisi scroll
+
+    document.getElementById("filmScroll").scrollTop = 0;
+
+
+    // Putar musik album
+
+    albumMusic.currentTime = 0;
+
+    albumMusic.volume = 0.55;
+
+    albumMusic.play().catch(error => {
+
+        console.log("Musik album tidak bisa diputar:", error);
+
+    });
+
+
+    // Progress musik
+
+    updateMusicProgress();
+
+}
+
+
+// =================================
+// MUSIC PROGRESS
+// =================================
+
+function updateMusicProgress() {
+
+    const music = document.getElementById("albumMusic");
+
+    const fill = document.getElementById("progressFill");
+
+    const current = document.getElementById("currentTime");
+
+    const duration = document.getElementById("duration");
+
+
+    function formatTime(seconds) {
+
+        if (!isFinite(seconds)) {
+            return "0:00";
+        }
+
+        const minutes = Math.floor(seconds / 60);
+
+        const remaining = Math.floor(seconds % 60);
+
+        return minutes + ":" + String(remaining).padStart(2, "0");
+
+    }
+
+
+    music.addEventListener("timeupdate", () => {
+
+        if (music.duration) {
+
+            const percentage =
+                (music.currentTime / music.duration) * 100;
+
+            fill.style.width = percentage + "%";
+
+            current.textContent = formatTime(music.currentTime);
+
+            duration.textContent = formatTime(music.duration);
+
+        }
+
+    });
+
+}
+
+
+// =================================
+// CLOSE ALBUM
+// =================================
+
+function closeAlbum() {
+
+    const album = document.getElementById("memoryAlbum");
+
+    const albumMusic = document.getElementById("albumMusic");
+
+    const chatMusic = document.getElementById("backgroundMusic");
+
+
+    // Tutup album
+
+    album.classList.remove("active");
+
+
+    // Hentikan video
+
+    document.querySelectorAll("#filmScroll video").forEach(video => {
+
+        video.pause();
+
+    });
+
+
+    // Hentikan lagu album
+
+    albumMusic.pause();
+
+    albumMusic.currentTime = 0;
+
+
+    // Putar kembali lagu chat dari awal
+
+    chatMusic.currentTime = 0;
+
+    chatMusic.volume = 0.35;
+
+    chatMusic.play().catch(error => {
+
+        console.log("Musik chat tidak bisa diputar:", error);
+
+    });
+
+}
+
+
+// =================================
+// IMAGE PREVIEW
+// =================================
+
+function openPreview(src) {
+
+    const preview = document.getElementById("imagePreview");
+
+    const image = document.getElementById("previewImage");
+
+    image.src = src;
+
+    preview.classList.add("active");
+
+}
+
+
+function closePreview() {
+
+    document.getElementById("imagePreview").classList.remove("active");
+
+}
+
+
+// =================================
+// BACK TO HOME
+// =================================
+
+function goBack() {
+
+    typing = false;
+
+    document.getElementById("chat").style.display = "none";
+
+    document.getElementById("home").style.display = "flex";
+
+
+    // Hentikan musik ketika kembali ke home
+
+    const music = document.getElementById("backgroundMusic");
+
+    music.pause();
+
+}
+
+
+// =================================
+// CLOSE PREVIEW WITH ESC
+// =================================
+
+document.addEventListener("keydown", function(event) {
+
+    if (event.key === "Escape") {
+
+        closePreview();
+
+    }
+
+});
+
+</script>
+
+</body>
+</html>
