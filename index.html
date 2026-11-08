@@ -744,17 +744,6 @@ body {
     background: #5e7997;
 }
 
-.film-number {
-    position: absolute;
-    top: 7px;
-    left: 7px;
-    padding: 4px 6px;
-    background: #0009;
-    color: white;
-    font-size: 8px;
-    letter-spacing: 1px;
-}
-
 .film-item img {
     cursor: pointer;
     opacity: 1;
@@ -1915,14 +1904,6 @@ img.src = "memories/" + item.file;
 img.onclick = () => openPreview(img.src);
 
             wrapper.appendChild(img);
-
-            const number = document.createElement("span");
-
-            number.className = "film-number";
-
-            number.textContent = String(item.number).padStart(2, "0");
-
-            wrapper.appendChild(number);
 
             const caption = document.createElement("div");
 
