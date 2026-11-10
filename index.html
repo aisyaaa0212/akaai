@@ -293,6 +293,19 @@ body {
     animation: smoothPop .65s cubic-bezier(.16,1,.3,1) forwards;
 }
 
+.message.image-message {
+    padding: 5px;
+}
+
+.message.image-message img {
+    display: block;
+    width: 100%;
+    max-width: 230px;
+    max-height: 300px;
+    object-fit: contain;
+    border-radius: 6px;
+    cursor: pointer;
+}
 
 /* =================================
    TIMESTAMP
@@ -396,6 +409,61 @@ body {
     transform: scale(1.03);
 }
 
+/* =================================
+   CONTINUE PROMPT — YES / NO
+================================= */
+
+.continue-prompt {
+    width: fit-content;
+    max-width: 85%;
+    margin: 18px auto;
+    padding: 14px 18px;
+    background: #ffffff;
+    border-radius: 12px;
+    text-align: center;
+    font-size: 13px;
+    line-height: 1.5;
+    color: #333;
+    box-shadow: 0 3px 12px #0002;
+
+    opacity: 0;
+    transform: translateY(15px) scale(.94);
+    animation: smoothPop .65s cubic-bezier(.16,1,.3,1) forwards;
+}
+
+.continue-actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.continue-actions button {
+    min-width: 70px;
+    padding: 8px 18px;
+    border: none;
+    border-radius: 20px;
+    background: #075e54;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: .2s ease;
+}
+
+.continue-actions button:hover {
+    background: #064b43;
+    transform: scale(1.05);
+}
+
+.continue-actions button:last-child {
+    background: #e8eeee;
+    color: #444;
+}
+
+.continue-actions button:last-child:hover {
+    background: #d8e0e0;
+}
 
 /* =================================
    PDF VIEWER
@@ -1107,12 +1175,12 @@ body {
                 <h4>Aka</h4>
 
                 <p id="preview">
-                    Hai, ada sesuatu yang ingin kusampaikan...
+                    Aka, izinkan Aii menyampaikan sesuatu...
                 </p>
             </div>
 
             <div class="unread" id="unread">
-                <div class="badge" id="badge">7</div>
+                <div class="badge" id="badge">8</div>
             </div>
 
         </div>
@@ -1347,6 +1415,10 @@ const messages = [
     },
 
     {
+        text: "How's your life?"
+    },
+
+    {
         text: "Sorry for bothering you."
     },
 
@@ -1479,7 +1551,9 @@ const MESSAGE_DELAY = 2000;
 let typing = false;
 let index = 0;
 let audioContext;
-
+let albumPromptShown = false;
+let followUpIndex = 0;
+let followUpActive = false;
 
 // =================================
 // CURRENT TIME
@@ -2079,6 +2153,7 @@ function closeAlbum() {
 
     const chatMusic = document.getElementById("backgroundMusic");
 
+    setTimeout(showContinuePrompt, 500);
 
     // Tutup album
 
@@ -2173,6 +2248,219 @@ document.addEventListener("DOMContentLoaded", () => {
         music.load();
     }
 });
+
+// =================================
+// PILIHAN SETELAH MELIHAT ALBUM
+// =================================
+
+function showContinuePrompt() {
+
+    if (albumPromptShown) return;
+
+    albumPromptShown = true;
+
+    const chatArea = document.getElementById("chatArea");
+
+    const prompt = document.createElement("div");
+    prompt.className = "continue-prompt";
+    prompt.textContent = "Mau lanjut ngobrol?";
+
+    const actions = document.createElement("div");
+    actions.className = "continue-actions";
+
+
+    // TOMBOL YES
+
+    const yesButton = document.createElement("button");
+    yesButton.textContent = "YES";
+
+    yesButton.onclick = () => {
+
+        prompt.remove();
+
+        followUpActive = true;
+        followUpIndex = 0;
+
+        showFollowUpMessage();
+
+    };
+
+
+    // TOMBOL NO
+
+    const noButton = document.createElement("button");
+    noButton.textContent = "NO";
+
+    noButton.onclick = () => {
+
+        prompt.remove();
+
+        typing = false;
+
+        appendChatMessage("Mungkin sampai sini aja ya?");
+
+        setTimeout(() => {
+
+            appendChatMessage("Thanks Aka udah luangin waktunyaa.");
+
+        }, 1500);
+
+    };
+
+
+    actions.appendChild(yesButton);
+    actions.appendChild(noButton);
+
+    prompt.appendChild(actions);
+
+    chatArea.appendChild(prompt);
+
+    chatArea.scrollTo({
+        top: chatArea.scrollHeight,
+        behavior: "smooth"
+    });
+
+}
+
+
+// =================================
+// PESAN LANJUTAN JIKA MEMILIH YES
+// =================================
+
+const followUpMessages = [
+
+    { text: "Ada sesuatu buat lo, sesuai sama yang gw janjikan dulu." },
+
+    { type: "image", file: "cth1.jpeg" },
+
+    { type: "image", file: "cth2.jpeg" },
+
+    { text: "Semoga lo suka ya, Aka." },
+
+    { text: "Sekarang lo udah jadi Aka yang lebih baik, selamat yaa." },
+
+    { text: "Gw seneng banget tahu itu." },
+
+    { text: "Oh iya, lo gak perlu percaya lagi sama gw kalo mau lo begitu," },
+
+    { text: "Gw juga gak bakal maksa kalo perasaan lo gak lagi sama." },
+
+    { text: "Atau mungkin lo udah sama orang lain," },
+
+    { text: "Tapi tetep, gw selalu menantikan kebahagiaan lo." },
+
+    { text: "Gw izin pamit ya, Sweetie." },
+
+    { text: "Makasih Akaa udah luangin waktunya buat Aii, mwehe." },
+
+    { text: "Wassalamualaikum." }
+
+];
+
+
+// =================================
+// MEMBUAT BUBBLE PESAN
+// =================================
+
+function appendChatMessage(text, imageFile = null) {
+
+    const chatArea = document.getElementById("chatArea");
+
+    const bubble = document.createElement("div");
+    bubble.className = "message sent";
+
+
+    if (imageFile) {
+
+        bubble.classList.add("image-message");
+
+        const image = document.createElement("img");
+
+        image.src = imageFile;
+        image.alt = "Kenangan untuk Aka";
+
+        image.onclick = () => openPreview(imageFile);
+
+        bubble.appendChild(image);
+
+    } else {
+
+        bubble.appendChild(
+            document.createTextNode(text)
+        );
+
+    }
+
+
+    const time = document.createElement("span");
+
+    time.className = "time";
+
+    time.innerHTML = `
+        ${getCurrentTime()}
+        <span class="checks">✓✓</span>
+    `;
+
+    bubble.appendChild(time);
+
+    chatArea.appendChild(bubble);
+
+    chatArea.scrollTo({
+        top: chatArea.scrollHeight,
+        behavior: "smooth"
+    });
+
+    playSound();
+
+}
+
+
+// =================================
+// MENAMPILKAN PESAN YES SATU PER SATU
+// =================================
+
+function showFollowUpMessage() {
+
+    if (
+        !followUpActive ||
+        followUpIndex >= followUpMessages.length
+    ) {
+
+        followUpActive = false;
+        return;
+
+    }
+
+
+    const msg = followUpMessages[followUpIndex];
+
+
+    if (msg.type === "image") {
+
+        appendChatMessage("", msg.file);
+
+    } else {
+
+        appendChatMessage(msg.text);
+
+    }
+
+
+    followUpIndex++;
+
+
+    if (followUpIndex < followUpMessages.length) {
+
+        setTimeout(showFollowUpMessage, MESSAGE_DELAY);
+
+    } else {
+
+        followUpActive = false;
+
+    }
+
+}
+
 </script>
 
 </body>
