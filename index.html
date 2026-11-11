@@ -99,6 +99,20 @@ body {
     outline: none;
 }
 
+#searchResults {
+    display: none;
+    padding: 0;
+    background: white;
+    color: #303030;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.search-result {
+    padding: 12px 15px;
+    border-bottom: 1px solid #eee;
+}
+
 .contact {
     display: flex;
     align-items: center;
@@ -110,6 +124,10 @@ body {
 
 .contact:hover {
     background: #f7f7f7;
+}
+
+#aiiContact {
+    display: none;
 }
 
 .avatar {
@@ -179,6 +197,38 @@ body {
     display: none;
     height: 100%;
     flex-direction: column;
+}
+
+#aiiChat {
+    display: none;
+    height: 100%;
+    flex-direction: column;
+    min-height: 0;
+}
+
+#aiiChat .chat-stage {
+    background-image:
+        linear-gradient(
+            rgba(0, 0, 0, 0.35),
+            rgba(0, 0, 0, 0.35)
+        ),
+        url("aiii1.jpg");
+
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+
+.date-bubble {
+    width: fit-content;
+    margin: 12px auto;
+    padding: 6px 12px;
+    background: #fff;
+    color: #54656f;
+    font-size: 12px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 1px 1px rgba(0,0,0,0.1);
 }
 
 .chat-header {
@@ -1160,12 +1210,28 @@ body {
         </div>
 
         <div class="search">
-            <input
-                type="text"
-                placeholder="Cari atau mulai chat baru">
-        </div>
+    <input
+        type="text"
+        id="searchInput"
+        placeholder="Cari atau ketik huruf A">
+    </div>
+    
+    <div id="searchResults"></div>
+    
+    <div class="contact" id="aiiContact" onclick="openAiiChat()" style="display: none;">
 
-        <div class="contact" onclick="openChat()">
+    <div class="avatar">
+        <img src="aiii.jpg" alt="Aii">
+    </div>
+
+    <div class="contact-info">
+        <h4>Aii</h4>
+        <p>Ketuk untuk membuka chat</p>
+    </div>
+
+</div>
+
+    <div class="contact" id="akaContact" onclick="openChat()">
 
             <div class="avatar">
                 <img src="akaaa.jpeg" alt="Aka">
@@ -1187,6 +1253,37 @@ body {
 
     </div>
 
+<!-- =================================
+         AII CHAT ROOM
+    ================================== -->
+
+    <div id="aiiChat">
+
+        <div class="chat-header">
+
+            <button class="back" onclick="closeAiiChat()">‹</button>
+
+            <div class="chat-profile">
+                <img src="aiii.jpg" alt="Aii">
+            </div>
+
+            <div class="chat-name">
+                <h4>Aii</h4>
+            </div>
+
+        </div>
+
+        <div class="chat-stage">
+    <div class="date-bubble">Hari ini</div>
+</div>
+
+        <div class="chat-footer" style="text-align: center;">
+    Anda tidak bisa mengirim pesan ke kontak ini,<br>
+    langsung di WhatsApp ori saja.
+    </div>
+
+    
+    </div>
 
     <!-- =================================
          CHAT ROOM
@@ -1356,7 +1453,6 @@ body {
         </div>
 
     </div>
-
 
     <!-- =================================
          IMAGE PREVIEW
@@ -1555,6 +1651,49 @@ let albumPromptShown = false;
 let followUpIndex = 0;
 let followUpActive = false;
 
+let chatStarted = false;
+let messageTimer = null;
+let resumeDelay = 1500;
+let pdfOpened = false;
+let noFollowUpIndex = 0;
+let noFollowUpActive = false;
+let aiiAlreadyOpened = false;
+
+// =================================
+// UNREAD MESSAGE COUNTER
+// =================================
+
+let unreadCount = 8;
+
+function updateUnreadBadge() {
+
+    const unread = document.getElementById("unread");
+    const badge = document.getElementById("badge");
+    const chatOpen = document.getElementById("chat").style.display === "flex";
+
+    badge.textContent = unreadCount;
+
+    unread.style.display =
+        !chatOpen && unreadCount > 0 ? "flex" : "none";
+
+}
+
+function markMessageRead() {
+
+    unreadCount = Math.max(0, unreadCount - 1);
+
+    updateUnreadBadge();
+
+}
+
+function addUnreadMessages(amount) {
+
+    unreadCount += amount;
+
+    updateUnreadBadge();
+
+}
+
 // =================================
 // CURRENT TIME
 // =================================
@@ -1640,8 +1779,6 @@ function playSound() {
     }
 
 }
-
-
 // =================================
 // OPEN CHAT
 // =================================
@@ -1652,18 +1789,7 @@ function openChat() {
 
     document.getElementById("chat").style.display = "flex";
 
-    document.getElementById("unread").style.display = "none";
-
-    const chatArea = document.getElementById("chatArea");
-
-    chatArea.innerHTML = `
-        <div class="date">
-            <span>Hari ini</span>
-        </div>
-    `;
-
-    index = 0;
-    typing = true;
+    updateUnreadBadge();
 
     const music = document.getElementById("backgroundMusic");
 
@@ -1673,10 +1799,38 @@ function openChat() {
         console.log("Musik tidak bisa diputar:", error);
     });
 
-    showMessage();
+    if (!chatStarted) {
 
-}
+        chatStarted = true;
+        typing = true;
 
+        showMessage();
+
+    } else if (followUpActive && !typing) {
+
+    typing = true;
+
+    messageTimer = setTimeout(showFollowUpMessage, resumeDelay);
+
+} else if (noFollowUpActive && !typing) {
+
+    typing = true;
+
+    messageTimer = setTimeout(showNoFollowUpMessage, resumeDelay);
+
+} else if (index < messages.length && messages[index - 1]?.type !== "pdf" && !typing) {
+
+    typing = true;
+
+    messageTimer = setTimeout(() => {
+
+        if (typing) {
+            showMessage();
+        }
+
+    }, resumeDelay);
+
+} }
 
 // =================================
 // SHOW MESSAGE
@@ -1761,6 +1915,7 @@ function showMessage() {
 
     chatArea.appendChild(bubble);
 
+    markMessageRead();
 
     // AUTO SCROLL
 
@@ -1786,13 +1941,13 @@ function showMessage() {
 
     if (index < messages.length) {
 
-        setTimeout(showMessage, MESSAGE_DELAY);
+        messageTimer = setTimeout(showMessage, MESSAGE_DELAY);
 
     }
 
     else {
 
-        setTimeout(showMemoryButton, 1500);
+        messageTimer = setTimeout(showMemoryButton, 1500);
 
     }
 
@@ -1841,6 +1996,8 @@ function openPdf(file, name) {
 
     modal.classList.add("active");
 
+    pdfOpened = true;
+
 }
 
 
@@ -1858,9 +2015,21 @@ function closePdf() {
 
     frame.src = "";
 
+    if (!pdfOpened) return;
+
+    pdfOpened = false;
+    addUnreadMessages(3);
     setTimeout(() => {
 
-        showMessage();
+        if (
+            document.getElementById("chat").style.display !== "none" &&
+            !document.getElementById("pdfModal").classList.contains("active")
+        ) {
+
+            typing = true;
+            showMessage();
+
+        }
 
     }, 1200);
 
@@ -2214,6 +2383,33 @@ function closePreview() {
 
 }
 
+// =================================
+// OPEN AII CHAT
+// =================================
+
+function openAiiChat() {
+
+    aiiAlreadyOpened = true;
+
+    document.getElementById("home").style.display = "none";
+    document.getElementById("chat").style.display = "none";
+    document.getElementById("aiiChat").style.display = "flex";
+
+}
+
+
+// =================================
+// CLOSE AII CHAT
+// =================================
+
+function closeAiiChat() {
+
+    document.getElementById("aiiChat").style.display = "none";
+
+    document.getElementById("home").style.display = "flex";
+
+    updateUnreadBadge();
+}
 
 // =================================
 // BACK TO HOME
@@ -2223,13 +2419,16 @@ function goBack() {
 
     typing = false;
 
+    clearTimeout(messageTimer);
+    messageTimer = null;
+
     document.getElementById("chat").style.display = "none";
 
     document.getElementById("home").style.display = "flex";
 
+    updateUnreadBadge();
 
     // Hentikan musik ketika kembali ke home
-
     const music = document.getElementById("backgroundMusic");
 
     music.pause();
@@ -2277,9 +2476,14 @@ function showContinuePrompt() {
     yesButton.onclick = () => {
 
         prompt.remove();
+        
+        addUnreadMessages(followUpMessages.length);
 
         followUpActive = true;
         followUpIndex = 0;
+
+        noFollowUpActive = false;
+        typing = true;
 
         showFollowUpMessage();
 
@@ -2294,22 +2498,16 @@ function showContinuePrompt() {
     noButton.onclick = () => {
 
         prompt.remove();
+        
+        addUnreadMessages(noFollowUpMessages.length);
+        
+        noFollowUpActive = true;
+        noFollowUpIndex = 0;
 
-        typing = false;
+        followUpActive = false;
+        typing = true;
 
-        appendChatMessage("Mungkin sampai sini aja ya?");
-
-        setTimeout(() => {
-
-            appendChatMessage("Thanks Aka udah luangin waktunyaa.");
-
-        }, 1500);
-
-        setTimeout(() => {
-
-            appendChatMessage("Wassalamualaikum.");
-
-        }, 4500);
+        showNoFollowUpMessage();
 
     };
 
@@ -2343,25 +2541,25 @@ const followUpMessages = [
 
     { text: "Semoga lo suka ya, Aka." },
 
-    { text: "Sekarang lo udah jadi Aka yang lebih baik, selamat yaa." },
+    { text: "Sekarang lo udah jadi Aka yang lebih baik, gw seneng banget tahu itu." },
 
-    { text: "Gw seneng banget tahu itu." },
+    { text: "Gapapa ya gw seolah ngobrol sama Aka yang gw kenal selama ini?" },
 
-    { text: "Jujur gw kayak gak tahu malu banget gak sih dateng lagi setelah sekian lamanya?" },
+    { text: "Jujur gw kocak banget gak sih dateng lagi setelah sekian lamanya?" },
     
     { text: "Gw gengsi banget lagian, wkwkwk." },
     
     { text: "Lagi-lagi Aii yang dateng lagi tiap kita asing, malu tahu sebenernyaa." },
 
-    { text: "Oh iya, lo gak perlu percaya lagi sama gw kalo mau lo begitu," },
+    { text: "Oh iya, gw juga gak berharap lo langsung percaya lagi sama gw kalo mau lo begitu," },
 
     { text: "Gw juga gak bakal maksa kalo perasaan lo gak lagi sama." },
 
-    { text: "Atau mungkin lo udah sama orang lain," },
+    { text: "Atau mungkin lo udah sama orang lain." },
 
     { text: "Tapi tetep, gw selalu menantikan kebahagiaan lo." },
 
-    { text: "Gw izin pamit ya, Sweetie." },
+    { text: "Gw izin pamit yaa, Sweetie." },
 
     { text: "Makasih Maniez udah luangin waktunyaa." },
 
@@ -2371,6 +2569,19 @@ const followUpMessages = [
 
 ];
 
+// =================================
+// PESAN LANJUTAN JIKA MEMILIH NO
+// =================================
+
+const noFollowUpMessages = [
+
+    "Mungkin sampai sini aja ya?",
+
+    "Thanks Aka udah luangin waktunyaa.",
+
+    "Wassalamualaikum."
+
+];
 
 // =================================
 // MEMBUAT BUBBLE PESAN
@@ -2419,6 +2630,8 @@ function appendChatMessage(text, imageFile = null) {
 
     chatArea.appendChild(bubble);
 
+    markMessageRead();
+
     chatArea.scrollTo({
         top: chatArea.scrollHeight,
         behavior: "smooth"
@@ -2437,17 +2650,19 @@ function showFollowUpMessage() {
 
     if (
         !followUpActive ||
+        !typing ||
         followUpIndex >= followUpMessages.length
     ) {
 
-        followUpActive = false;
+        if (followUpIndex >= followUpMessages.length) {
+            followUpActive = false;
+        }
+
         return;
 
     }
 
-
     const msg = followUpMessages[followUpIndex];
-
 
     if (msg.type === "image") {
 
@@ -2459,21 +2674,155 @@ function showFollowUpMessage() {
 
     }
 
-
     followUpIndex++;
-
 
     if (followUpIndex < followUpMessages.length) {
 
-        setTimeout(showFollowUpMessage, MESSAGE_DELAY);
+        messageTimer = setTimeout(showFollowUpMessage, MESSAGE_DELAY);
 
     } else {
 
         followUpActive = false;
+        typing = false;
 
     }
 
 }
+
+// =================================
+// MENAMPILKAN PESAN NO SATU PER SATU
+// =================================
+
+function showNoFollowUpMessage() {
+
+    if (
+        !noFollowUpActive ||
+        !typing ||
+        noFollowUpIndex >= noFollowUpMessages.length
+    ) {
+
+        if (noFollowUpIndex >= noFollowUpMessages.length) {
+            noFollowUpActive = false;
+        }
+
+        return;
+
+    }
+
+    appendChatMessage(noFollowUpMessages[noFollowUpIndex]);
+
+    noFollowUpIndex++;
+
+        if (noFollowUpIndex < noFollowUpMessages.length) {
+
+        messageTimer = setTimeout(showNoFollowUpMessage, MESSAGE_DELAY);
+
+    } else {
+
+        noFollowUpActive = false;
+        typing = false;
+
+        updateUnreadBadge();
+
+    }
+
+}
+
+// =================================
+// SEARCH PESAN A-Z
+// =================================
+
+const alphabetMessages = {
+    A: "A muncul kontak Aii",
+    B: "Bukan Aii ya, Aka?",
+    C: "Cari siapa di sini?",
+    D: "Dalem, mas?",
+    E: "Emang kita bakal terus asing ya?",
+    F: "Fantaskah aku bersamamu?",
+    G: "Gimana kabarmu sekarang?",
+    H: "Hahaha, masih inget aku nggak?",
+    I: "Ini kita beneran udah sejauh ini ya?",
+    J: "Jangan-jangan cuma aku yang masih inget.",
+    K: "Kangen boleh, balik jangan dulu.",
+    L: "Lu pernah jadi rumah, tahu nggak?",
+    M: "Masih ada namaku di ingatanmu?",
+    N: "Nggak nyangka ya, sekarang cuma jadi kenangan.",
+    O: "Oh, ternyata asing bisa selama ini.",
+    P: "Pernah sedekat itu, sekarang sejauh ini.",
+    Q: "Quite funny how we became strangers.",
+    R: "Rindu, tapi gengsi.",
+    S: "Salah satu hal yang nggak bisa gw ulang: kita.",
+    T: "Ternyata waktu nggak selalu bikin lupa.",
+    U: "Udah bahagia belum sekarang?",
+    V: "Very random, tiba-tiba inget kamu.",
+    W: "Waktu itu kita pernah sedekat itu, ya.",
+    X: "XOXO, dari seseorang yang pernah mengenalmu.",
+    Y: "Yaudah, pura-pura nggak kangen dulu.",
+    Z: "Zzz... masih aja kepikiran."
+};
+
+
+// =================================
+// SEARCH FUNCTION
+// =================================
+
+const searchInput = document.getElementById("searchInput");
+const searchResults = document.getElementById("searchResults");
+const contact = document.getElementById("akaContact");
+
+searchInput.addEventListener("input", function () {
+
+    const letter = this.value.trim().toUpperCase();
+
+    searchResults.innerHTML = "";
+
+    if (letter === "") {
+
+    searchResults.style.display = "none";
+    contact.style.display = "flex";
+    document.getElementById("aiiContact").style.display =
+    aiiAlreadyOpened ? "flex" : "none";
+
+    return;
+
+}
+
+        if (letter === "A") {
+        contact.style.display = "flex";
+        document.getElementById("aiiContact").style.display = "flex";
+    } else {
+        contact.style.display = "none";
+        document.getElementById("aiiContact").style.display = "none";
+    }
+    
+    if (alphabetMessages[letter]) {
+
+    searchResults.style.display = "block";
+
+    // Tampilkan pesan pencarian selain huruf A
+if (letter !== "A") {
+
+    const result = document.createElement("div");
+
+    result.className = "search-result";
+    result.textContent = alphabetMessages[letter];
+
+    searchResults.appendChild(result);
+
+}
+
+// Tampilkan kontak Aii hanya saat mencari huruf A
+if (letter === "A") {
+    document.getElementById("aiiContact").style.display = "flex";
+}
+
+} else {
+
+    searchResults.style.display = "none";
+
+}
+
+});
 
 </script>
 
