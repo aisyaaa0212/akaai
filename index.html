@@ -1438,10 +1438,6 @@ body {
 
             <div class="album-right">
 
-                <div class="film-label">
-                    MEMORY ARCHIVE
-                </div>
-
                 <div
                     class="film-scroll"
                     id="filmScroll">
@@ -1695,6 +1691,18 @@ function addUnreadMessages(amount) {
 }
 
 // =================================
+// UPDATE HOME CHAT PREVIEW
+// =================================
+
+function updateChatPreview(text, imageFile = null) {
+
+    const preview = document.getElementById("preview");
+
+    preview.textContent = imageFile ? "Foto" : text;
+
+}
+
+// =================================
 // CURRENT TIME
 // =================================
 
@@ -1911,11 +1919,15 @@ function showMessage() {
     bubble.appendChild(time);
 
 
-    // ADD MESSAGE
+    // ADD MESSAGE// 
 
     chatArea.appendChild(bubble);
 
-    markMessageRead();
+    updateChatPreview(
+    msg.type === "pdf" ? msg.caption : msg.text
+);
+
+markMessageRead();
 
     // AUTO SCROLL
 
@@ -2630,6 +2642,10 @@ function appendChatMessage(text, imageFile = null) {
 
     chatArea.appendChild(bubble);
 
+updateChatPreview(text, imageFile);
+
+markMessageRead();
+
     markMessageRead();
 
     chatArea.scrollTo({
@@ -2736,29 +2752,26 @@ const alphabetMessages = {
     A: "A muncul kontak Aii",
     B: "Bukan Aii ya, Aka?",
     C: "Cari siapa di sini?",
-    D: "Dalem, mas?",
+    D: "Dulu kita sebahagia ituu",
     E: "Emang kita bakal terus asing ya?",
     F: "Fantaskah aku bersamamu?",
     G: "Gimana kabarmu sekarang?",
-    H: "Hahaha, masih inget aku nggak?",
+    H: "Hahaha, masih inget gw nggak?",
     I: "Ini kita beneran udah sejauh ini ya?",
-    J: "Jangan-jangan cuma aku yang masih inget.",
-    K: "Kangen boleh, balik jangan dulu.",
-    L: "Lu pernah jadi rumah, tahu nggak?",
-    M: "Masih ada namaku di ingatanmu?",
+    J: "Jangan-jangan cuma gw yang masih inget.",
+    K: "Kangen boleh kan yaa",
+    L: "Lo the best person i've meet",
+    M: "Masihkah engkau menyebutku?",
     N: "Nggak nyangka ya, sekarang cuma jadi kenangan.",
     O: "Oh, ternyata asing bisa selama ini.",
     P: "Pernah sedekat itu, sekarang sejauh ini.",
     Q: "Quite funny how we became strangers.",
-    R: "Rindu, tapi gengsi.",
+    R: "Rindu, tapi gengsian gwnya.",
     S: "Salah satu hal yang nggak bisa gw ulang: kita.",
     T: "Ternyata waktu nggak selalu bikin lupa.",
     U: "Udah bahagia belum sekarang?",
-    V: "Very random, tiba-tiba inget kamu.",
     W: "Waktu itu kita pernah sedekat itu, ya.",
-    X: "XOXO, dari seseorang yang pernah mengenalmu.",
-    Y: "Yaudah, pura-pura nggak kangen dulu.",
-    Z: "Zzz... masih aja kepikiran."
+    Y: "Yaudah, Aii pura-pura nggak kangen dulu."
 };
 
 
