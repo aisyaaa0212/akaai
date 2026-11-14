@@ -1532,8 +1532,8 @@ const messages = [
 
     {
         type: "pdf",
-        file: "ilysm aka.pdf",
-        name: "ilysm aka.pdf",
+        file: "ilysm akaa.pdf",
+        name: "ilysm akaa.pdf",
         size: "PDF Document",
         caption: "There's something I've been wanting to tell you."
     },
@@ -2004,7 +2004,7 @@ function openPdf(file, name) {
 
     document.getElementById("pdfTitle").textContent = name;
 
-    frame.src = file + "?v=2";
+    frame.src = file;
 
     modal.classList.add("active");
 
